@@ -23,6 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import * as homeElements from "./pages/home/elements";
+
 Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
   cy.request({
     method: "POST",
@@ -40,6 +42,7 @@ Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
   });
 });
 
+// Não está funcionando, rever futuramente:
 Cypress.Commands.add("apiResetData", function () {
   cy.request({
     method: "GET",
@@ -49,4 +52,3 @@ Cypress.Commands.add("apiResetData", function () {
     },
   }).then((response) => expect(response.status).to.equal(200));
 });
-
