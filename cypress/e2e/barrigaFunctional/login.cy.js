@@ -3,7 +3,6 @@ import loginPage from "../../support/pages/login";
 
 describe("login", function () {
   before(function () {
-    cy.apiLogin();
     cy.visit("/");
   });
 

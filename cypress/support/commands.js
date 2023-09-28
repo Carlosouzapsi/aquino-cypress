@@ -23,17 +23,30 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-Cypress.Commands.add("apiLogin", function () {
+Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
   cy.request({
     method: "POST",
     url: "https://barrigarest.wcaquino.me/signin",
     body: {
-      email: "carlos.souza@email.com",
-      senha: "pwd123",
+      email: emailUser,
+      senha: passUser,
       redirecionar: false,
     },
-  }).then((response) => {
+  }).then(function (response) {
     expect(response.status).to.equal(200);
-    console.log(response);
+    const token = response.body.token;
+
+    Cypress.env("jwtToken", token);
   });
 });
+
+Cypress.Commands.add("apiResetData", function () {
+  cy.request({
+    method: "GET",
+    url: "https://barrigarest.wcaquino.me/reset",
+    headers: {
+      authorization: "Bearer " + Cypress.env("jwtToken"),
+    },
+  }).then((response) => expect(response.status).to.equal(200));
+});
+
