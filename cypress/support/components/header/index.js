@@ -9,6 +9,10 @@ class Header {
     cy.get(el.menuSettings).should("be.visible").click();
     cy.get(el.menuContas).should("be.visible").click();
   }
+
+  navToAccountMovement() {
+    cy.get(el.menuContaMovimentacao).should("be.visible").click();
+  }
   resetAccounts() {
     cy.get(el.menuSettings).should("be.visible").click();
     cy.get(el.resetAccounts).should("be.visible").click();

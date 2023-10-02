@@ -35,4 +35,17 @@ describe("Account", function () {
     accountPage.accountNameShouldBeUpdated(user.accountName, newAccName);
   });
   // it.skip("should remove an account successfully", function () {});
+
+  it.only("should not create an account with same name", function () {
+    // Refatorar, cadastrar via API no futuro.
+    accountPage.addAccount(user.accountName);
+    accountPage.accountNameShouldBeVisible(user.accountName);
+
+    cy.visit("/");
+    header.navToAccounts();
+
+    // Mensagem de validação do erro podia ser melhor.
+    const msg = "Erro: Error: Request failed with status code 400";
+    accountPage.toast.shouldHaveMsg(msg);
+  });
 });
