@@ -23,7 +23,6 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-import * as homeElements from "./pages/home/elements";
 
 Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
   cy.request({
@@ -31,8 +30,8 @@ Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
     url: "https://barrigarest.wcaquino.me/signin",
     body: {
       email: emailUser,
-      senha: passUser,
       redirecionar: false,
+      senha: passUser,
     },
   }).then(function (response) {
     expect(response.status).to.equal(200);
@@ -43,12 +42,12 @@ Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
 });
 
 // Não está funcionando, rever futuramente:
-Cypress.Commands.add("apiResetData", function () {
+Cypress.Commands.add("apiResetAccounts", function () {
   cy.request({
     method: "GET",
     url: "https://barrigarest.wcaquino.me/reset",
     headers: {
-      authorization: "Bearer " + Cypress.env("jwtToken"),
+      Authorization: "Bearer " + Cypress.env("jwtToken"),
     },
   }).then((response) => expect(response.status).to.equal(200));
 });

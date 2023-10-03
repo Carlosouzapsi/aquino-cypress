@@ -13,7 +13,8 @@ describe("Account", function () {
     accountName: faker.string.alpha(5),
   };
   beforeEach(function () {
-    cy.visit("/");
+    cy.apiLogin(user.email, user.password);
+    cy.visit("https://barrigareact.wcaquino.me/contas");
     loginPage.doLogin(user.email, user.password);
     header.navToAccounts();
   });
