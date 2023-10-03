@@ -64,3 +64,20 @@ Cypress.Commands.add("apiAddAccount", function (accName) {
     expect(response.status).to.eq(201);
   });
 });
+
+Cypress.Commands.add("apiGetAccountId", function (accName) {
+  cy.request({
+    method: "GET",
+    url: "https://barrigarest.wcaquino.me/contas",
+    headers: {
+      Authorization: `JWT ${Cypress.env("jwtToken")}`,
+    },
+    qs: {
+      nome: accName,
+    },
+  }).then(function (response) {
+    expect(response.status).to.eq(200);
+    let id = response.body[0].id;
+    return id;
+  });
+});
