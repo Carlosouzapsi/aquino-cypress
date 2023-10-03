@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
+Cypress.Commands.add("getJwtToken", function (emailUser, passUser) {
   cy.request({
     method: "POST",
     url: "https://barrigarest.wcaquino.me/signin",
@@ -36,18 +36,31 @@ Cypress.Commands.add("apiLogin", function (emailUser, passUser) {
   }).then(function (response) {
     expect(response.status).to.equal(200);
     const token = response.body.token;
-
     Cypress.env("jwtToken", token);
   });
 });
 
-// Não está funcionando, rever futuramente:
 Cypress.Commands.add("apiResetAccounts", function () {
   cy.request({
     method: "GET",
     url: "https://barrigarest.wcaquino.me/reset",
     headers: {
-      Authorization: "Bearer " + Cypress.env("jwtToken"),
+      Authorization: "JWT " + Cypress.env("jwtToken"),
     },
   }).then((response) => expect(response.status).to.equal(200));
+});
+
+Cypress.Commands.add("apiAddAccount", function (accName) {
+  cy.request({
+    method: "POST",
+    url: "https://barrigarest.wcaquino.me/contas",
+    headers: {
+      Authorization: `JWT ${Cypress.env("jwtToken")}`,
+    },
+    body: {
+      nome: accName,
+    },
+  }).then(function (response) {
+    expect(response.status).to.eq(201);
+  });
 });

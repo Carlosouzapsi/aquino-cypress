@@ -1,4 +1,5 @@
 describe("loginAPI", function () {
+  // refatorar a repetição da url
   it("should do login successfully by API", function () {
     cy.request({
       method: "POST",

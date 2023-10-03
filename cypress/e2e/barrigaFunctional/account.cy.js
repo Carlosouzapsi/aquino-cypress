@@ -6,6 +6,7 @@ import header from "../../support/components/header";
 import { faker } from "@faker-js/faker";
 
 describe("Account", function () {
+  // usar massa de dados em fixture ou factories
   const user = {
     name: "carlos souza",
     email: "carlos.souza@email.com",
@@ -14,7 +15,6 @@ describe("Account", function () {
   };
   beforeEach(function () {
     cy.apiLogin(user.email, user.password);
-    cy.visit("https://barrigareact.wcaquino.me/contas");
     loginPage.doLogin(user.email, user.password);
     header.navToAccounts();
   });

@@ -1,11 +1,11 @@
 import header from "../../support/components/header";
 import loginPage from "../../support/pages/login";
 import accountPage from "../../support/pages/accounts";
-import AccountMovimentPage from "../../support/pages/AccountMoviment";
+import accountMovimentPage from "../../support/pages/AccountMoviment";
 
 import { faker } from "@faker-js/faker";
 
-describe.skip("Account moviment", function () {
+describe("Account moviment", function () {
   // Considerar usar um arquivo de fixture ou arquivo de factories
   const accMovData = {
     descricao: "Desc",
@@ -16,15 +16,13 @@ describe.skip("Account moviment", function () {
     name: "carlos souza",
     email: "carlos.souza@email.com",
     password: "pwd123",
-    accountName: faker.string.alpha(5),
+    accountName: faker.string.alpha(5) + " viaAPI",
   };
   before(function () {
-    // Refatorar, cadastrar via API no futuro.
+    cy.getJwtToken(user.email, user.password);
+    cy.apiAddAccount(user.accountName);
     cy.visit("/");
     loginPage.doLogin(user.email, user.password);
-    accountPage.addAccount(user.accountName);
-    accountPage.accountNameShouldBeVisible(user.accountName);
-    cy.pause();
   });
   beforeEach(function () {
     header.navToAccountMovement();
@@ -33,9 +31,9 @@ describe.skip("Account moviment", function () {
   after(function () {
     header.resetAccounts();
   });
-
+  // TODO
   it.only("Should create a transaction sucessfully", function () {
-    AccountMovimentPage.addAccountMov(
+    accountMovimentPage.addAccountMov(
       accMovData.descricao,
       accMovData.valor,
       accMovData.interessado
