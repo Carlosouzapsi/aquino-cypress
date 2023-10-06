@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import factories from "../../support/factories";
 
 describe("Account API", function () {
   // refatorar a repetição da url
@@ -57,7 +58,7 @@ describe("Account API", function () {
       });
     });
   });
-  it.only("should not create an Account with same name", function () {
+  it("should not create an Account with same name", function () {
     const account = {
       nome: `${faker.string.alpha(5)}`,
     };
@@ -68,7 +69,6 @@ describe("Account API", function () {
     const errorMsg = "Já existe uma conta com esse nome!";
 
     // Tentando adicionar a mesma conta
-    cy.log("Oi");
     cy.request({
       method: "POST",
       url: "https://barrigarest.wcaquino.me/contas",

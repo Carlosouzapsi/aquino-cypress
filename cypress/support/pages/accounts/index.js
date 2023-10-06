@@ -1,7 +1,7 @@
 import { el } from "./elements";
 import toast from "../../components/toast";
 
-class Account {
+class AccountPage {
   constructor() {
     this.toast = toast;
   }
@@ -31,4 +31,4 @@ class Account {
   }
 }
 
-export default new Account();
+export default new AccountPage();

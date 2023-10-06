@@ -2,13 +2,14 @@ import header from "../../support/components/header";
 import loginPage from "../../support/pages/login";
 import accountPage from "../../support/pages/accounts";
 import accountMovimentPage from "../../support/pages/AccountMoviment";
+import balancePage from "../../support/pages/balance";
 
 import { faker } from "@faker-js/faker";
 
 describe("Account moviment", function () {
   // Considerar usar um arquivo de fixture ou arquivo de factories
   const accMovData = {
-    descricao: "Desc",
+    descricao: faker.string.alpha(5) + " Desc",
     valor: "100",
     interessado: "TestInteressado",
   };
@@ -20,6 +21,7 @@ describe("Account moviment", function () {
   };
   before(function () {
     cy.getJwtToken(user.email, user.password);
+    cy.apiResetAccounts();
     cy.apiAddAccount(user.accountName);
     cy.visit("/");
     loginPage.doLogin(user.email, user.password);
@@ -29,15 +31,21 @@ describe("Account moviment", function () {
   });
 
   after(function () {
-    header.resetAccounts();
+    cy.visit("/");
+    cy.apiResetAccounts();
   });
   // TODO
-  it.only("Should create a transaction sucessfully", function () {
+  it("Should create a transaction sucessfully", function () {
     accountMovimentPage.addAccountMov(
       accMovData.descricao,
       accMovData.valor,
       accMovData.interessado
     );
-    cy.log("test");
+
+    const msg = "Movimentação inserida com sucesso!";
+    accountMovimentPage.toast.shouldHaveMsg(msg);
+
+    const size = 7;
+    balancePage.shouldHaveListLength(size);
   });
 });

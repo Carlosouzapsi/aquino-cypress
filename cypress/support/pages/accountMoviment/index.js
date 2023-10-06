@@ -1,13 +1,16 @@
 import { el } from "./elements";
+import toast from "../../components/toast";
 
 class AccountMovimentPage {
-  constructor() {}
+  constructor() {
+    this.toast = toast;
+  }
 
   addAccountMov(desc, valor, interessado) {
     cy.get(el.inputDescricao).clear().type(desc);
-    // cy.get(el.inputValor).clear().type(valor);
-    // cy.get(el.inputInteressado).type(interessado);
-    // cy.get(el.btnSalvar).click();
+    cy.get(el.inputValor).clear().type(valor);
+    cy.get(el.inputInteressado).type(interessado);
+    cy.contains(el.btnSalvar).click();
   }
 }
 
