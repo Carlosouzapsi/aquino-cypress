@@ -48,4 +48,29 @@ describe("Account moviment", function () {
     const size = 7;
     balancePage.shouldHaveListLength(size);
   });
+
+  it.only("Should remove a transaction sucessfully", function () {
+    accountMovimentPage.addAccountMov(
+      accMovData.descricao,
+      accMovData.valor,
+      accMovData.interessado
+    );
+
+    // Hook to validate the correct url
+    cy.url().should("be.equal", "https://barrigareact.wcaquino.me/extrato");
+
+    // Usando o within como uma alternativa ao .find()
+    cy.get("[data-test=mov-row]")
+      .eq(-1)
+      .within(() => {
+        // cria um contexto e não limita igual o find pra achar uma tag
+        cy.get("a[href='#']").click();
+      })
+      .then(() => {
+        const msg = "Movimentação removida com sucesso!";
+        balancePage.toast.shouldHaveMsg(msg);
+      });
+
+    cy.contains(`${accMovData.descricao}`).should("not.exist");
+  });
 });

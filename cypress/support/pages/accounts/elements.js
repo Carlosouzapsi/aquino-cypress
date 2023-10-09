@@ -3,4 +3,5 @@ export const el = {
   accNameRow: "td", // review and improve
   btnSalvar: ".btn", // review and improve
   btnEdit: "fa-edit",
+  btnDelete: "a[href='#']",
 };

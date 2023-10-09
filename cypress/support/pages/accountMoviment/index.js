@@ -12,6 +12,10 @@ class AccountMovimentPage {
     cy.get(el.inputInteressado).type(interessado);
     cy.contains(el.btnSalvar).click();
   }
+
+  removeAccountMov() {
+    
+  }
 }
 
 export default new AccountMovimentPage();
