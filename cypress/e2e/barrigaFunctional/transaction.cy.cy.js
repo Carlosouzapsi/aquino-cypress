@@ -6,6 +6,7 @@ import balancePage from "../../support/pages/balance";
 
 import { faker } from "@faker-js/faker";
 
+// Need refactor:
 describe("Account moviment", function () {
   // Considerar usar um arquivo de fixture ou arquivo de factories
   const accMovData = {

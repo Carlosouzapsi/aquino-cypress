@@ -1,18 +1,14 @@
 import { faker } from "@faker-js/faker";
 
-import dayjs from "dayjs";
-export const account = {
-  newAccount: {
-    // TODO
-  },
-  // accountMovement: {
-  //   tipo: "REC",
-  //   data_transacao: dayjs().format("DD/MM/YYYY"),
-  //   data_pagamento: dayjs().add(1, "day").format("DD/MM/YYYY"),
-  //   descricao: "Descricao",
-  //   valor: "123",
-  //   envolvido: "Teste",
-  //   conta_id: accountId,
-  //   status: true,
-  // },
+export const user = {
+  name: "carlos souza",
+  email: "carlos@email.com",
+  password: "pwd123",
+  accountName: faker.string.alpha(5),
+};
+
+export const accountMovment = {
+  descricao: faker.string.alpha(5) + "Desc",
+  valor: "100",
+  interessado: "TestInteressado",
 };

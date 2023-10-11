@@ -3,44 +3,33 @@ import loginPage from "../../support/pages/login";
 import accountPage from "../../support/pages/accounts";
 import accountMovimentPage from "../../support/pages/AccountMoviment";
 import balancePage from "../../support/pages/balance";
+import buildEnv from "../../support/buildEnv";
 
-import { faker } from "@faker-js/faker";
+import { accountMovment, user } from "../../support/factories";
 
 describe("Account moviment", function () {
-  // Considerar usar um arquivo de fixture ou arquivo de factories
-  const accMovData = {
-    descricao: faker.string.alpha(5) + " Desc",
-    valor: "100",
-    interessado: "TestInteressado",
-  };
-  const user = {
-    name: "carlos souza",
-    email: "carlos.souza@email.com",
-    password: "pwd123",
-    accountName: faker.string.alpha(5) + " viaAPI",
-  };
   before(function () {
-    cy.getJwtToken(user.email, user.password);
-    cy.apiResetAccounts();
-    cy.apiAddAccount(user.accountName);
+    buildEnv();
     cy.visit("/");
     loginPage.doLogin(user.email, user.password);
   });
+
   beforeEach(function () {
     header.navToAccountMovement();
   });
 
   after(function () {
     cy.visit("/");
-    cy.apiResetAccounts();
   });
   // TODO
-  it("Should create a transaction sucessfully", function () {
+  it.only("Should create a transaction sucessfully", function () {
     accountMovimentPage.addAccountMov(
-      accMovData.descricao,
-      accMovData.valor,
-      accMovData.interessado
+      accountMovment.descricao,
+      accountMovment.valor,
+      accountMovment.interessado
     );
+
+    cy.pause();
 
     const msg = "Movimentação inserida com sucesso!";
     accountMovimentPage.toast.shouldHaveMsg(msg);
@@ -50,11 +39,39 @@ describe("Account moviment", function () {
   });
 
   it.only("Should remove a transaction sucessfully", function () {
+    // Mockando resposta do cadastro mov
+    cy.intercept(
+      {
+        method: "POST",
+        url: "https://barrigarest.wcaquino.me/transacoes",
+      },
+      {
+        statusCode: 201,
+        body: {
+          id: 1819153,
+          descricao: accMovData.descricao,
+          envolvido: accMovData.valor,
+          observacao: null,
+          tipo: "REC",
+          data_transacao: "2023-10-11T03:00:00.000Z",
+          data_pagamento: "2023-10-11T03:00:00.000Z",
+          valor: "100.00",
+          status: false,
+          conta_id: 1940925,
+          usuario_id: 41550,
+          transferencia_id: null,
+          parcelamento_id: null,
+        },
+      }
+    ).as("novaMovimentacao");
+
     accountMovimentPage.addAccountMov(
       accMovData.descricao,
       accMovData.valor,
       accMovData.interessado
     );
+
+    cy.pause();
 
     // Hook to validate the correct url
     cy.url().should("be.equal", "https://barrigareact.wcaquino.me/extrato");

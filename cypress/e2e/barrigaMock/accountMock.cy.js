@@ -1,75 +1,23 @@
 import loginPage from "../../support/pages/login";
-import homePage from "../../support/pages/home";
 import accountPage from "../../support/pages/accounts";
 import header from "../../support/components/header";
 
-import { faker } from "@faker-js/faker";
+import buildEnv from "../../support/buildEnv";
+import { user } from "../../support/factories";
 
 describe("Account", function () {
-  // usar massa de dados em fixture ou factories
-  const user = {
-    name: "carlos souza",
-    email: "carlos.souza@email.com",
-    password: "pwd123",
-    accountName: faker.string.alpha(5),
-  };
-
   after(function () {
     cy.clearLocalStorage();
   });
 
   beforeEach(function () {
-    // rota de saldos
-    cy.intercept(
-      {
-        method: "GET",
-        url: "https://barrigarest.wcaquino.me/saldo",
-      },
-      {
-        statusCode: 200,
-        body: [
-          {
-            conta_id: 999,
-            conta: "carteira Mockada!!!!",
-            saldo: "0.01",
-          },
-          {
-            conta_id: 1000,
-            conta: "Conta Mockada!!!!",
-            saldo: "10000.00",
-          },
-        ],
-      }
-    ).as("saldo");
+    buildEnv();
     cy.visit("/");
     loginPage.doLogin(user.email, user.password);
   });
-  it.only("should create an account successfully", function () {
-    // Lista de contas mockadas
-    cy.intercept(
-      {
-        method: "GET",
-        url: "https://barrigarest.wcaquino.me/contas",
-      },
-      {
-        statusCode: 200,
-        body: [
-          {
-            id: 1,
-            nome: "Carteira",
-            visivel: true,
-            usuario_id: 1,
-          },
-          {
-            id: 2,
-            nome: "Banco",
-            visivel: true,
-            usuario_id: 1,
-          },
-        ],
-      }
-    ).as("contasLista");
-    // Cadastro de conta mockado
+
+  it("should create an account successfully", function () {
+    // Cadastro mockado de conta
     cy.intercept(
       {
         method: "POST",
@@ -83,11 +31,12 @@ describe("Account", function () {
           usuario_id: 1,
         },
       }
-    ).as("contasNova");
+    ).as("cadastroConta");
 
     const newAccount = "newAccountMock";
     header.navToAccounts();
 
+    // Lista de contas mockadas com a nova conta
     cy.intercept(
       {
         method: "GET",
@@ -116,7 +65,8 @@ describe("Account", function () {
           },
         ],
       }
-    ).as("contasSalvas");
+    ).as("listaComNovoCadastro");
+
     accountPage.addAccount(newAccount);
     accountPage.accountNameShouldBeVisible(newAccount);
 
@@ -124,22 +74,68 @@ describe("Account", function () {
     accountPage.toast.shouldHaveMsg(msg);
   });
   it("should update an account successfully", function () {
-    const newAccount = "newAccountUpdate";
-    cy.apiAddAccount(newAccount);
-    header.navToAccounts();
-    const newAccountUpdated = "AccUpdated";
+    // Mockando resposta de edição
+    cy.intercept(
+      {
+        method: "PUT",
+        url: "https://barrigarest.wcaquino.me/contas/**",
+      },
+      {
+        statusCode: 204,
+        body: {
+          id: 1,
+          nome: "Carteira Editada",
+          visivel: true,
+          usuario_id: 1,
+        },
+      }
+    ).as("contaEdicao");
 
-    // Preciso refatorar o page object esse locator pode ser util na hora de excluir
-    accountPage.accountNameShouldBeUpdated(newAccount, newAccountUpdated);
+    // Mockando lista de contas
+    cy.intercept(
+      {
+        method: "GET",
+        url: "https://barrigarest.wcaquino.me/contas",
+      },
+      {
+        statusCode: 200,
+        body: [
+          {
+            id: 1,
+            nome: "Carteira editada",
+            visivel: true,
+            usuario_id: 1,
+          },
+          {
+            id: 2,
+            nome: "Banco",
+            visivel: true,
+            usuario_id: 1,
+          },
+        ],
+      }
+    ).as("listaEditada");
+
+    header.navToAccounts();
+    const newAccountUpdated = "Carteira editada";
+    accountPage.accountNameShouldBeUpdated("Carteira", newAccountUpdated);
   });
-  // it.skip("should remove an account successfully", function () {});
-
   it("should not create an account with same name", function () {
-    const sameAccount = "sameAccountName";
-    cy.apiAddAccount(sameAccount);
+    // Mockando erro de conta igual
+    cy.intercept(
+      {
+        method: "POST",
+        url: "https://barrigarest.wcaquino.me/contas",
+      },
+      {
+        statusCode: 400,
+        body: { error: "Já existe uma conta com esse nome!" },
+      }
+    );
 
     header.navToAccounts();
-    accountPage.addAccount(sameAccount);
+    cy.pause();
+    accountPage.addAccount("Carteira");
 
     const msg = "Erro: Error: Request failed with status code 400";
     accountPage.toast.shouldHaveMsg(msg);
