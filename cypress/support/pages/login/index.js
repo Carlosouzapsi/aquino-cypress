@@ -5,7 +5,7 @@ class LoginPage {
   constructor() {
     this.toast = toast;
   }
-  doLogin(email, password) {
+  doLogin(email = "", password = "") {
     cy.get(el.inputEmail).should("be.visible").clear().type(email);
     cy.get(el.inputPassword).clear().type(password);
     cy.get(el.btnEntrar).and("have.text", "Entrar").click();

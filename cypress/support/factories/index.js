@@ -7,7 +7,7 @@ export const user = {
   accountName: faker.string.alpha(5),
 };
 
-export const accountMovment = {
+export const accountMovement = {
   descricao: faker.string.alpha(5) + "Desc",
   valor: "100",
   interessado: "TestInteressado",

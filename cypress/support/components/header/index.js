@@ -10,6 +10,10 @@ class Header {
     cy.get(el.menuContas).should("be.visible").click();
   }
 
+  navToBalance() {
+    cy.get(el.menuExtrato).should("be.visible").click();
+  }
+
   navToAccountMovement() {
     cy.get(el.menuContaMovimentacao).should("be.visible").click();
   }
